@@ -2,8 +2,6 @@
 using ApiRest.Interface;
 using ApiRest.Model;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,11 +20,6 @@ namespace ApiRest.Implements
         public async Task<List<Persona>> Get(int cedula) => await _contexto.Persona.Where(a => a.Cedula.Equals(cedula.ToString())).ToListAsync();
 
         public async Task<List<Persona>> Get() => await _contexto.Persona.ToListAsync();
-
-        public async Task<JObject> Delete(Persona persona)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task Post(Persona persona)
         {
@@ -49,6 +42,22 @@ namespace ApiRest.Implements
             {
                 return "02";
 
+            }
+        }
+
+        public async Task<string> Delete(int cedula)
+        {
+            Persona persona = await _contexto.Persona.Where(a => a.Cedula.Equals(cedula.ToString())).FirstOrDefaultAsync();
+
+            if (persona == null)
+            {
+                return "02";
+            }
+            else
+            {
+                _contexto.Remove(persona);
+                await _contexto.SaveChangesAsync();
+                return "01";
             }
         }
     }

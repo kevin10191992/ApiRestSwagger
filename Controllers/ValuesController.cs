@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using ApiRest.Context;
 using ApiRest.Interface;
 using ApiRest.Model;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ApiRest.Controllers
@@ -45,13 +40,17 @@ namespace ApiRest.Controllers
             return new JsonResult(await _Persona.Get());
         }
 
-        // GET api/values/5
+        /// <summary>
+        /// Devuelve una persona
+        /// </summary>
+        /// <param name="cedula"></param>
+        /// <returns></returns>
         [HttpGet("{cedula}")]
         public async Task<IActionResult> Get(int cedula)
         {
             if (cedula <= 0)
             {
-                return BadRequest(new { Codigo = "02", Descripcion = "Persona no existe" });
+                return NotFound(new { Codigo = "02", Descripcion = "Persona no existe" });
             }
 
             return new JsonResult(await _Persona.Get(cedula));
@@ -66,14 +65,13 @@ namespace ApiRest.Controllers
         /// Sample request:
         ///
         ///     POST /Persona
-        ///        {
-        /// 
-        /// "Nombres": "kevin",
-        ///  "Apellidos": "Perez",
-        ///  "Cedula": "123456789",
-        ///  "Genero": "M",
-        ///  "Edad": 27
-        ///    }
+        ///     {
+        ///       "Nombres": "kevin",
+        ///       "Apellidos": "Perez",
+        ///       "Cedula": "123456789",
+        ///       "Genero": "M",
+        ///       "Edad": 27
+        ///     }
         ///
         /// </remarks>
         /// <param name="persona"></param>
@@ -125,14 +123,13 @@ namespace ApiRest.Controllers
         /// Sample request:
         ///
         ///     PUT /Persona
-        ///        {
-        /// 
-        /// "Nombres": "kevin Ivanot",
-        ///  "Apellidos": "Perez Rondon",
-        ///  "Cedula": "123456789",
-        ///  "Genero": "M",
-        ///  "Edad": 32
-        ///    }
+        ///     {
+        ///         "Nombres": "kevin Ivanot",
+        ///         "Apellidos": "Perez Rondon",
+        ///         "Cedula": "123456789",
+        ///         "Genero": "M",
+        ///         "Edad": 32
+        ///     }
         ///
         /// </remarks>
         /// <param name="cedula"></param>
@@ -172,15 +169,15 @@ namespace ApiRest.Controllers
                     switch (Codigo)
                     {
                         case "01":
-                            result.Add("Codigo", "01");
+                            result.Add("Codigo", Codigo);
                             result.Add("Descripcion", "Persona Actualizada.");
                             break;
                         case "02":
-                            result.Add("Codigo", "02");
+                            result.Add("Codigo", Codigo);
                             result.Add("Descripcion", "Persona No existe.");
                             break;
                         case "03":
-                            return BadRequest(new { Codigo = "02", Descripcion = "Una Persona no puede cambiar de numero de cedula" });
+                            return BadRequest(new { Codigo, Descripcion = "Una Persona no puede cambiar de numero de cedula" });
                     }
 
 
@@ -199,7 +196,11 @@ namespace ApiRest.Controllers
             return new JsonResult(result);
         }
 
-        // DELETE api/values/5
+        /// <summary>
+        /// Elimina a una persona
+        /// </summary>
+        /// <param name="cedula"></param>
+        /// <returns></returns>
         [HttpDelete("{cedula}")]
         public async Task<IActionResult> Delete(int cedula)
         {
@@ -210,22 +211,28 @@ namespace ApiRest.Controllers
                 return BadRequest(new { Codigo = "02", Descripcion = "Persona no existe" });
             }
 
-            Persona persona = await _contexto.Persona.Where(a => a.Cedula.Equals(cedula.ToString())).FirstOrDefaultAsync();
-
-
-            if (persona == null)
+            try
+            {
+                string Codigo = await _Persona.Delete(cedula);
+                switch (Codigo)
+                {
+                    case "01":
+                        result.Add("Codigo", "01");
+                        result.Add("Descripcion", "Persona Eliminada");
+                        break;
+                    case "02":
+                        result.Add("Codigo", "02");
+                        result.Add("Descripcion", $"La persona con id: {cedula} no existe");
+                        break;
+                }
+            }
+            catch (Exception ex)
             {
                 result.Add("Codigo", "02");
-                result.Add("Descripcion", $"La persona con id: {cedula} no existe");
-                return Ok(result);
+                result.Add("Descripcion", "No se pudo eliminar a la Persona");
             }
-            else
-            {
-                _contexto.Remove(persona);
-                await _contexto.SaveChangesAsync();
-                result.Add("Codigo", "01");
-                result.Add("Descripcion", "Persona Eliminada");
-            }
+
+
 
 
             return new JsonResult(result);

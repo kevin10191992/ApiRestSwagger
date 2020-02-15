@@ -4,25 +4,87 @@
         <name>ApiRest</name>
     </assembly>
     <members>
+        <member name="T:ApiRest.Controllers.ValuesController">
+            <summary>
+            Controlador 
+            </summary>
+        </member>
+        <member name="M:ApiRest.Controllers.ValuesController.#ctor(ApiRest.Interface.IPersonas)">
+            <summary>
+            constructor
+            </summary>
+            <param name="persona"></param>
+        </member>
+        <member name="M:ApiRest.Controllers.ValuesController.Get">
+            <summary>
+            Retorna las personas
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ApiRest.Controllers.ValuesController.Get(System.Int32)">
+            <summary>
+            Devuelve una persona
+            </summary>
+            <param name="cedula"></param>
+            <returns></returns>
+        </member>
         <member name="M:ApiRest.Controllers.ValuesController.Post(ApiRest.Model.Persona)">
              <summary>
-             Creates a TodoItem.
+             Crea una persona
              </summary>
              <remarks>
              Sample request:
             
-                 POST /Todo
+                 POST /Persona
                  {
-                    "id": 1,
-                    "name": "Item1",
-                    "isComplete": true
+                   "Nombres": "kevin",
+                   "Apellidos": "Perez",
+                   "Cedula": "123456789",
+                   "Genero": "M",
+                   "Edad": 27
                  }
             
              </remarks>
-             <param name="item"></param>
-             <returns>A newly created TodoItem</returns>
-             <response code="201">Returns the newly created item</response>
-             <response code="400">If the item is null</response> 
+             <param name="persona"></param>
+             <returns>Nueva persona creada</returns>
+        </member>
+        <member name="M:ApiRest.Controllers.ValuesController.Put(System.Int32,ApiRest.Model.Persona)">
+             <summary>
+             Permite actualizar a una persona
+             </summary>
+             <remarks>
+             Sample request:
+            
+                 PUT /Persona
+                 {
+                     "Nombres": "kevin Ivanot",
+                     "Apellidos": "Perez Rondon",
+                     "Cedula": "123456789",
+                     "Genero": "M",
+                     "Edad": 32
+                 }
+            
+             </remarks>
+             <param name="cedula"></param>
+             <param name="persona"></param>
+             <returns></returns>
+        </member>
+        <member name="M:ApiRest.Controllers.ValuesController.Delete(System.Int32)">
+            <summary>
+            Elimina a una persona
+            </summary>
+            <param name="cedula"></param>
+            <returns></returns>
+        </member>
+        <member name="T:ApiRest.Model.Persona">
+            <summary>
+            Clase persona
+            </summary>
+        </member>
+        <member name="P:ApiRest.Model.Persona.PersonaId">
+            <summary>
+            AutoIncrementral
+            </summary>
         </member>
     </members>
 </doc>

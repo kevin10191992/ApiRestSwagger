@@ -10,10 +10,13 @@ namespace ApiRest.Interface
     public interface IPersonas
     {
         Task<List<Persona>> Get();
-        Task<List<Persona>> Get(int cedula);
-        Task Post(Persona persona);
-        Task<string> Put(int cedula, Persona persona);
-        Task<JObject> Delete(Persona persona);
 
+        Task<List<Persona>> Get(int cedula);
+
+        Task Post(Persona persona);
+
+        Task<string> Put(int cedula, Persona persona);
+
+        Task<string> Delete(int cedula);
     }
 }
